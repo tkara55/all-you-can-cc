@@ -39,18 +39,19 @@ func add_bots():
 
 func get_random_color():
 	return Color(randf(), randf(), randf())
+	
 
 func customize_bots():
 	if len(bots) >= 1:
-		bots[0].set_speed(0.3)
+		bots[0].set_speed(100)
 		bots[0].set_color(get_random_color())
 		bots[0].set_bot_name("Kolay_Bot")
 	if len(bots) >= 2:
-		bots[1].set_speed(0.2)
+		bots[1].set_speed(100)
 		bots[1].set_color(get_random_color())
 		bots[1].set_bot_name("Normal_Bot")
 	if len(bots) >= 3:
-		bots[2].set_speed(0.1)
+		bots[2].set_speed(0.05)
 		bots[2].set_color(get_random_color())
 		bots[2].set_bot_name("Zor_Bot")
 		
