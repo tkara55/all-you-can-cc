@@ -4,6 +4,7 @@ var bot_name = "Bot"
 var eat_speed = 1.0
 var food: Node = null
 var eat_timer = 0.0
+var is_bot = true
 
 func _process(delta: float) -> void:
 	if food == null or not is_instance_valid(food):

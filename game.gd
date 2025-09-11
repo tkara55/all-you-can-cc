@@ -5,7 +5,6 @@ var BotScene: PackedScene = preload("res://scenes/bot.tscn")
 var FoodScene: PackedScene = preload("res://scenes/food.tscn")
 
 var bot_count: int = 3
-var bots: Array = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -35,24 +34,24 @@ func add_bots():
 		
 		bot.food = bot_food
 		
-		bots.append(bot)
-
+		Global.bots.append(bot)
+		
+	
 func get_random_color():
 	return Color(randf(), randf(), randf())
 	
-
 func customize_bots():
-	if len(bots) >= 1:
-		bots[0].set_speed(100)
-		bots[0].set_color(get_random_color())
-		bots[0].set_bot_name("Kolay_Bot")
-	if len(bots) >= 2:
-		bots[1].set_speed(100)
-		bots[1].set_color(get_random_color())
-		bots[1].set_bot_name("Normal_Bot")
-	if len(bots) >= 3:
-		bots[2].set_speed(0.05)
-		bots[2].set_color(get_random_color())
-		bots[2].set_bot_name("Zor_Bot")
+	if len(Global.bots) >= 1:
+		Global.bots[0].set_speed(0.10)
+		Global.bots[0].set_color(get_random_color())
+		Global.bots[0].set_bot_name("Kolay_Bot")
+	if len(Global.bots) >= 2:
+		Global.bots[1].set_speed(0.13)
+		Global.bots[1].set_color(get_random_color())
+		Global.bots[1].set_bot_name("Normal_Bot")
+	if len(Global.bots) >= 3:
+		Global.bots[2].set_speed(0.12)
+		Global.bots[2].set_color(get_random_color())
+		Global.bots[2].set_bot_name("Zor_Bot")
 		
 	
