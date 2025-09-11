@@ -22,18 +22,16 @@ func _ready() -> void:
 	countdown()
 	
 func _process(delta: float) -> void:
-
-	if Global.game_running == 0:
-		return  # geri sayım bitene kadar oyun donuk
-	
-	elif Global.game_running == 1:
+	if Global.game_state == 2 and not Global.game_over_triggered:
+		game_over_ui.visible = true
+		print("Game Over triggered!")
+		Global.game_over_triggered = true
 		return
 	
-	elif not Global.game_over_triggered:
-		game_over_ui.visible = true
-		print("a")
-		Global.game_over_triggered = true
-		
+	if Global.game_state == 0:  # countdown
+		return
+	elif Global.game_state == 1:  # playing
+		return
 		
 func add_player_food():
 	var player_food = FoodScene.instantiate()
@@ -89,5 +87,5 @@ func _on_timer_timeout() -> void:
 	else:
 		timer.stop()
 		count_down_label.visible = false
-		Global.game_running = 1
+		Global.game_state = 1
 	
