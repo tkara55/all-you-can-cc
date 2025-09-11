@@ -2,9 +2,11 @@ extends Node2D
 
 
 @onready var game_over_ui: Node2D = $CanvasLayer/Game_Over_UI
-@onready var player: AnimatedSprite2D = $Player
+@onready var player: Node2D = $Player
 @onready var count_down_label: Label = $CanvasLayer/CountDownLabel
 @onready var timer: Timer = $CanvasLayer/CountDownLabel/Timer
+@onready var red_button: Sprite2D = $CanvasLayer/RedButton
+@onready var green_button: Sprite2D = $CanvasLayer/GreenButton
 
 
 var BotScene: PackedScene = preload("res://scenes/bot.tscn")
@@ -15,6 +17,8 @@ var countdown_value = 3
 
 func _ready() -> void:
 	randomize()
+	Global.blue_indicator = $CanvasLayer/BlueButtonIndicator
+	Global.blue_indicator.visible = false
 	add_player_food()
 	add_bots()
 	customize_bots()
@@ -57,15 +61,15 @@ func get_random_color():
 	
 func customize_bots():
 	if len(Global.bots) >= 1:
-		Global.bots[0].set_speed(0.01)
+		Global.bots[0].set_speed(0.4)
 		Global.bots[0].set_color(get_random_color())
 		Global.bots[0].set_bot_name("Kolay_Bot")
 	if len(Global.bots) >= 2:
-		Global.bots[1].set_speed(2)
+		Global.bots[1].set_speed(0.5)
 		Global.bots[1].set_color(get_random_color())
 		Global.bots[1].set_bot_name("Normal_Bot")
 	if len(Global.bots) >= 3:
-		Global.bots[2].set_speed(3)
+		Global.bots[2].set_speed(0.6)
 		Global.bots[2].set_color(get_random_color())
 		Global.bots[2].set_bot_name("Zor_Bot")
 
@@ -88,4 +92,18 @@ func _on_timer_timeout() -> void:
 		timer.stop()
 		count_down_label.visible = false
 		Global.game_state = 1
+		_run_red_indicator_loop()
+		_run_green_indicator_loop()
 	
+func _run_red_indicator_loop() -> void:
+	while Global.game_state == 1:
+		var t = create_tween()
+		t.tween_property(red_button, "scale", Vector2(2.2, 2.2), 0.05)
+		t.tween_property(red_button, "scale", Vector2(2.0, 2.0), 0.05)
+		await t.finished
+func _run_green_indicator_loop() -> void:
+	while Global.game_state == 1:
+		var t = create_tween()
+		t.tween_property(green_button, "scale", Vector2(2.2, 2.2), 0.05)
+		t.tween_property(green_button, "scale", Vector2(2.0, 2.0), 0.05)
+		await t.finished

@@ -1,4 +1,4 @@
-extends AnimatedSprite2D
+extends Node2D
 var food: Food = null # Oyuncunun önündeki yiyecek
 var last_key = ""
 

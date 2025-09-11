@@ -1,20 +1,22 @@
 extends Node2D
 class_name Food
-var food_health = 0
+
 @onready var sprite: AnimatedSprite2D = $ShakeContainer/AnimatedSprite2D
 @onready var shake_container: Node2D = $ShakeContainer
+
+var blue_indicator_active = false
 var shake_tween: Tween
 var shake_queue: Array = []
 var is_shaking = false
-
+var food_health = 0
 # Her yiyecek türünün özellikleri
 var food_data = {
 	"apple": {
-		"max_health": 150,
+		"max_health": 30,
 		"frame_count": 6
 	},
 	"pear": {
-		"max_health": 180,
+		"max_health": 30,
 		"frame_count": 6
 	}
 }
@@ -47,7 +49,6 @@ func _setup_food(food_name: String):
 	sprite.frame = 0
 	
 	print("Yeni yiyecek: %s, Can: %d, Frame başına can: %d" % [food_name, max_health, health_per_frame])
-
 func eat(eater : Node):
 	# Oyun durumu kontrolü - game over durumunda yeme işlemi yapma
 	if Global.game_state != 1 or waiting_for_food or is_falling:
@@ -83,29 +84,35 @@ func _handle_food_finished(eater: Node):
 		await get_tree().process_frame
 		queue_free()
 		return
-	
+	if eater.name == "Player":
+		Global.blue_indicator.visible = true
+		blue_indicator_active = true
+		blue_indicator_animation()
 	if eater in Global.bots:
 		_start_new_food()
 	else:
 		pass
-
 func _start_new_food():
 	if food_types_index < food_types.size():
 		_setup_food(food_types[food_types_index])
 		sprite.visible = true
 		_food_fall()
-
 func _input(event: InputEvent) -> void:
 	if waiting_for_food and Input.is_action_just_pressed("call_food"):
 		_start_new_food()
-
 func _food_fall():
 	if is_falling:
 		return
-		
+	shake_queue.clear()
+	is_shaking = false
 	is_falling = true
 	var tween = create_tween()
 	var target_pos = position
+	
+	if blue_indicator_active:
+		blue_indicator_active = false
+		Global.blue_indicator.visible = false
+		Global.blue_indicator.scale = Vector2.ONE  # resetle
 	
 	position = target_pos + Vector2(0, -500)
 	
@@ -114,7 +121,6 @@ func _food_fall():
 	
 	is_falling = false
 	waiting_for_food = false
-
 func shake():
 	# Shake'i sıraya ekle
 	shake_queue.append(true)
@@ -122,8 +128,8 @@ func shake():
 	# Eğer şu anda shake çalışmıyorsa başlat
 	if not is_shaking:
 		_process_shake_queue()
-
 func _process_shake_queue():
+	
 	# Oyun bitmiş ise shake'leri temizle ve çık
 	if Global.game_state != 1:
 		shake_queue.clear()
@@ -160,3 +166,20 @@ func _process_shake_queue():
 	# Animasyon bitince sıradaki shake'i işle
 	await shake_tween.finished
 	_process_shake_queue()
+
+func blue_indicator_animation() -> void:
+	# ayrı bir coroutine gibi çalışıyor
+	blue_indicator_active = true
+	_run_blue_indicator_loop()
+
+
+func _run_blue_indicator_loop() -> void:
+	# sonsuz değil, flag true olduğu sürece dönüyor
+	await get_tree().process_frame  # bir frame bekle, yoksa recursive anında patlar
+	while blue_indicator_active:
+		var t = create_tween()
+		t.tween_property(Global.blue_indicator, "scale", Vector2(1.6, 1.6), 0.1)
+		t.tween_property(Global.blue_indicator, "scale", Vector2(1.4, 1.4), 0.1)
+		await t.finished
+	
+	
