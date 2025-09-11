@@ -1,6 +1,7 @@
 extends AnimatedSprite2D
+var food: Food = null # Oyuncunun önündeki yiyecek
 var last_key = ""
-var food: AnimatedSprite2D = null # Oyuncunun önündeki yiyecek
+
 
 func _ready() -> void:
 	pass 
