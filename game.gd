@@ -12,7 +12,6 @@ extends Node2D
 var BotScene: PackedScene = preload("res://scenes/bot.tscn")
 var FoodScene: PackedScene = preload("res://scenes/food.tscn")
 
-var bot_count: int = 1
 var countdown_value = 3
 
 func _ready() -> void:
@@ -21,9 +20,9 @@ func _ready() -> void:
 	Global.blue_indicator.visible = false
 	
 	add_player_food()
-	add_bots()
-	Global.customize_bots()
-	setup_positions() # oyuncu + botları ekrana eşit aralıkla yerleştir
+	add_bot()
+	Global.apply_bot_settings()  # Seçilen bot ayarlarını uygula
+	setup_positions() # oyuncu + bot pozisyonlarını ayarla
 	game_over_ui.visible = false
 	countdown()
 
@@ -32,32 +31,23 @@ func setup_positions():
 	var screen_rect = get_viewport().get_visible_rect()
 	var cam_pos = camera_2d.global_position
 	
-	# Spacing'i azaltmak için ekranın sadece ortasındaki kısmını kullan
+	# İki karakter için pozisyonlar (player ve bot)
 	var screen_width = screen_rect.size.x
-	var usable_width = screen_width * 0.75  # Ekranın %70'ini kullan (daha yakın)
+	var spacing = screen_width * 0.6  # Karakterler arası mesafe
 	
-	# Merkezi alan hesapla
 	var center_x = cam_pos.x
-	var left = center_x - usable_width / 2
-	var right = center_x + usable_width / 2
-	
-	var total_slots = bot_count + 1 # player + bots
 	var y_pos = player.position.y
 	
-	for i in range(total_slots):
-		# Soldan sağa eşit aralıkla dağıt ama daha yakın
-		var x_pos = lerp(left, right, float(i) / (total_slots - 1))
-		
-		if i == 0:
-			# Player
-			player.position = Vector2(x_pos, y_pos)
-			player.food.position = player.position + Vector2(0, 50)
-			blue_button_indicator.position = player.position + Vector2(0, 180)
-		else:
-			# Botlar
-			var bot = Global.bots[i - 1]
-			bot.position = Vector2(x_pos, y_pos)
-			bot.food.position = bot.position + Vector2(0, 50)
+	# Player sol tarafta
+	var player_x = center_x - spacing / 2
+	player.position = Vector2(player_x, y_pos)
+	player.food.position = player.position + Vector2(0, 50)
+	blue_button_indicator.position = player.position + Vector2(0, 180)
+	
+	# Bot sağ tarafta
+	var bot_x = center_x + spacing / 2
+	Global.bot.position = Vector2(bot_x, y_pos)
+	Global.bot.food.position = Global.bot.position + Vector2(0, 50)
 
 func _process(delta: float) -> void:
 	if Global.game_state == 2 and not Global.game_over_triggered:
@@ -77,20 +67,15 @@ func add_player_food():
 	player_food.position = player.position + Vector2(0,50)
 	player.food = player_food
 
-func add_bots():
-	for i in range(bot_count):
-		var bot = BotScene.instantiate()
-		add_child(bot)
-		
-		var bot_food = FoodScene.instantiate()
-		add_child(bot_food)
-		
-		bot.food = bot_food
-		Global.bots.append(bot)
-
-func get_random_color():
-	return Color(randf(), randf(), randf())
+func add_bot():
+	var bot = BotScene.instantiate()
+	add_child(bot)
 	
+	var bot_food = FoodScene.instantiate()
+	add_child(bot_food)
+	
+	bot.food = bot_food
+	Global.bot = bot  # Tek bot olarak ata
 
 # === Geri sayım kısmı ===	
 func countdown():
