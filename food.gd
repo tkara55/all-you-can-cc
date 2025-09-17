@@ -12,11 +12,11 @@ var food_health = 0
 # Her yiyecek türünün özellikleri
 var food_data = {
 	"apple": {
-		"max_health": 30,
+		"max_health": 60,
 		"frame_count": 6
 	},
 	"pear": {
-		"max_health": 30,
+		"max_health": 60,
 		"frame_count": 6
 	}
 }
