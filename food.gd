@@ -3,7 +3,7 @@ class_name Food
 
 @onready var sprite: AnimatedSprite2D = $ShakeContainer/AnimatedSprite2D
 @onready var shake_container: Node2D = $ShakeContainer
-
+@onready var shake_reset_timer: Timer = Timer.new()
 var blue_indicator_active = false
 var shake_tween: Tween
 var shake_queue: Array = []
@@ -12,7 +12,7 @@ var food_health = 0
 # Her yiyecek türünün özellikleri
 var food_data = {
 	"apple": {
-		"max_health": 60,
+		"max_health": 6,
 		"frame_count": 6
 	},
 	"pear": {
@@ -33,6 +33,10 @@ var frame_count = 0
 var health_per_frame = 0
 
 func _ready() -> void:
+	shake_reset_timer.one_shot = true
+	shake_reset_timer.wait_time = 0.25  # yarım saniye içinde basmazsa shake durur
+	shake_reset_timer.timeout.connect(_on_shake_timeout)
+	add_child(shake_reset_timer)
 	_setup_food(food_types[0])
 
 func _setup_food(food_name: String):
@@ -51,25 +55,21 @@ func _setup_food(food_name: String):
 	print("Yeni yiyecek: %s, Can: %d, Frame başına can: %d" % [food_name, max_health, health_per_frame])
 
 func eat(eater : Node):
-	# Oyun durumu kontrolü - game over durumunda yeme işlemi yapma
 	if Global.game_state != 1 or waiting_for_food or is_falling:
 		return
 		
 	food_health -= 1
 	print("%s yedi, kalan health: %d" % [eater.name, food_health])
 	
-	# Her yemede shake efekti
 	shake()
+	shake_reset_timer.start() # her yemede timer resetlenir
 	
-	# Frame değişimi kontrolü - can azaldıkça frame artsın
 	var eaten_health = max_health - food_health
 	var target_frame = min(eaten_health / health_per_frame, frame_count - 1)
-	
 	if sprite.frame != target_frame:
 		sprite.frame = target_frame
 		
 	if food_health <= 0:
-		print("%s bitirdi!" % eater.name)
 		_handle_food_finished(eater)
 
 func _handle_food_finished(eater: Node):
@@ -122,9 +122,9 @@ func _food_fall():
 		Global.blue_indicator.visible = false
 		Global.blue_indicator.scale = Vector2.ONE  # resetle
 	
-	position = target_pos + Vector2(0, -500)
+	position = target_pos + Vector2(0, -250)
 	
-	tween.tween_property(self, "position", target_pos, 1.2).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "position", target_pos, 1.5).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 	await tween.finished
 	
 	is_falling = false
@@ -186,6 +186,9 @@ func _run_blue_indicator_loop() -> void:
 	await get_tree().process_frame  # bir frame bekle, yoksa recursive anında patlar
 	while blue_indicator_active:
 		var t = create_tween()
-		t.tween_property(Global.blue_indicator, "scale", Vector2(1.6, 1.6), 0.1)
-		t.tween_property(Global.blue_indicator, "scale", Vector2(1.4, 1.4), 0.1)
+		t.tween_property(Global.blue_indicator, "scale", Vector2(2.1, 2.1), 0.1)
+		t.tween_property(Global.blue_indicator, "scale", Vector2(1.9, 1.9), 0.1)
 		await t.finished
+func _on_shake_timeout():
+	# Timer süresi doldu = artık basılmıyor, kuyruk sıfırlansın
+	shake_queue.clear()
