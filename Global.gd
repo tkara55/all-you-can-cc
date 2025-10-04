@@ -5,7 +5,8 @@ var game_state = 0
 var game_over_triggered: bool = false
 var bot: Node = null  # Tek bot
 var blue_indicator: Node = null
-
+var player_ref : Node = null
+var bot_ref : Node = null
 # Bot tiplerini tanımla
 var bot_types = {
 	"easy": {

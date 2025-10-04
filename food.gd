@@ -77,9 +77,12 @@ func _handle_food_finished(eater: Node):
 	sprite.visible = false
 	waiting_for_food = true
 	
-	if food_types_index >= food_types.size():
-		# ÖNCE oyun durumunu değiştir, SONRA queue_free çağır
+	if food_types_index >= food_types.size(): #OYUN BİTİMİİİİİ
+		# ÖNCE oyun durumunu değiştir, SONRA queue_free çağır 
 		Global.game_state = 2
+		
+		Global.bot_ref.stop()
+		Global.player_ref.stop()
 		
 		# Bir frame bekle ki diğer objeler durumu görsün
 		await get_tree().process_frame

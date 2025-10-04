@@ -15,8 +15,11 @@ func _ready() -> void:
 	player_holder.add_child(player_inst)
 	bot_holder.add_child(bot_inst)
 	
+	Global.bot = bot_inst  # Global bot referansını ayarla
+	Global.apply_bot_settings()
+	
 	animation_player.play("intro")
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(2.5).timeout
 	animation_player.play_backwards("intro")
 	await animation_player.animation_finished
 	get_tree().change_scene_to_file("res://scenes/game.tscn")

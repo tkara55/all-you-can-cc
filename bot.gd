@@ -5,8 +5,12 @@ var eat_speed = 1.0
 var food: Node = null
 var eat_timer = 0.0
 var is_bot = true
-@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
-@onready var mask: Sprite2D = $Mask
+@onready var idle: Sprite2D = $Sprites/Idle
+@onready var mask: Sprite2D = $Sprites/Mask
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+
+func _ready() -> void:
+	Global.bot_ref = animation_player
 
 func _process(delta: float) -> void:
 	if food == null or not is_instance_valid(food):
@@ -26,7 +30,7 @@ func set_bot_name(name_str: String):
 	name = name_str
 
 func set_color(color: Color):
-	animated_sprite_2d.modulate = color
+	idle.modulate = color
 	
 func set_mask_visible(visible: bool):
 	mask.visible = visible

@@ -8,6 +8,9 @@ extends Node2D
 @onready var green_button: Sprite2D = $CanvasLayer/GreenButton
 @onready var camera_2d: Camera2D = $Camera2D
 @onready var blue_button_indicator: Sprite2D = $CanvasLayer/BlueButtonIndicator
+@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var food_holder: Node2D = $FoodHolder
+@onready var bot_holder: Node2D = $BotHolder
 
 var BotScene: PackedScene = preload("res://scenes/bot.tscn")
 var FoodScene: PackedScene = preload("res://scenes/food.tscn")
@@ -15,10 +18,17 @@ var FoodScene: PackedScene = preload("res://scenes/food.tscn")
 var countdown_value = 3
 
 func _ready() -> void:
+	
+	var bot_inst = BotScene.instantiate()
+	var food_inst = FoodScene.instantiate()
+	bot_holder.add_child(bot_inst)
+	food_holder.add_child(food_inst)
+	
 	randomize()
 	Global.blue_indicator = $CanvasLayer/BlueButtonIndicator
 	Global.blue_indicator.visible = false
 	
+	animation_player.play()
 	add_player_food()
 	add_bot()
 	Global.apply_bot_settings()  # Seçilen bot ayarlarını uygula
