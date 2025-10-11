@@ -3,7 +3,8 @@ var food: Food = null # Oyuncunun önündeki yiyecek
 var last_key = ""
 var is_ducking = false
 var is_stunned = false
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var animation_player: AnimationPlayer = $DodgeZone/AnimationPlayer
+
 
 
 func _ready() -> void:
@@ -29,10 +30,11 @@ func duck():
 	if is_ducking or is_stunned:
 		return
 	is_ducking = true
+	animation_player.play("duck")
 	print("ducked")
-	await get_tree().create_timer(1).timeout
+	await animation_player.animation_finished
+	animation_player.play("idle")
 	is_ducking = false
-	
 	
 func _on_dodge_zone_area_entered(area: Area2D) -> void:
 	if not is_ducking:
@@ -41,6 +43,7 @@ func _on_dodge_zone_area_entered(area: Area2D) -> void:
 func hit_by_projectile():
 	if is_stunned:
 		return
+	print("stunned")
 	stun(2.0)
 	
 func stun(duration: float):

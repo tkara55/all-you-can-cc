@@ -11,7 +11,7 @@ var is_bot = true
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 
 var ProjectileScene = preload("res://scenes/projectile.tscn")
-var throw_cooldown = 5.0
+var throw_cooldown = 2.0
 var throw_timer = 0.0
 var can_throw = true
 
@@ -33,7 +33,7 @@ func _process(delta: float) -> void:
 		if throw_timer >= throw_cooldown:
 			can_throw = true
 			throw_timer = 0.0
-	elif Global.game_state == 1 and randf() < 0.2 * delta:
+	elif Global.game_state == 1 and randf() < 0.9 * delta:
 		throw_object()
 		
 func throw_object():
@@ -45,7 +45,7 @@ func throw_object():
 	
 	var projectile = ProjectileScene.instantiate()
 	get_parent().get_parent().add_child(projectile)
-	projectile.global_position = global_position + Vector2(-30, 0)
+	projectile.global_position = global_position + Vector2(-30, -150)
 	projectile.direction = Vector2.LEFT
 	
 func set_speed(speed: float):

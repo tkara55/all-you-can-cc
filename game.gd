@@ -23,9 +23,6 @@ func _ready() -> void:
 	Global.blue_indicator = $CanvasLayer/BlueButtonIndicator
 	Global.blue_indicator.visible = false
 	
-	# Intro animasyonu
-	animation_player.play("start")
-	
 	# Bot oluştur veya mevcut olanı al
 	var bot: Node2D
 	if bot_holder.get_child_count() == 0:
@@ -43,11 +40,10 @@ func _ready() -> void:
 	add_bot_food()
 	
 	# Pozisyonları ayarla
-	setup_positions()
-	
+
 	# Game over UI'ı kapalı başlat
 	game_over_ui.visible = false
-	
+	setup_positions()
 	# Geri sayım başlat
 	countdown()
 
@@ -61,19 +57,10 @@ func setup_positions():
 	
 	var center_x = cam_pos.x
 	var y_pos = player.position.y
-	
-	# Player sol tarafta
-	var player_x = center_x - spacing / 2
-	player.position = Vector2(player_x, y_pos)
+
 	player.food.position = Vector2(0, 15)  # Player'a göre relative
-	blue_button_indicator.position = player.position + Vector2(0, 220)
-	
-	# Bot sağ tarafta (holder'ı pozisyonla)
-	if Global.bot:
-		var bot_x = center_x + spacing / 2
-		bot_holder.position = Vector2(bot_x, y_pos)
-		Global.bot.position = Vector2.ZERO  # Holder içinde merkez
-		Global.bot.food.position = Vector2(0, 15)  # Bot'a göre relative
+
+	Global.bot.food.position = Vector2(0, 15)  # Bot'a göre relative
 # === Game loop ===
 func _process(delta: float) -> void:
 	if Global.game_state == 2 and not Global.game_over_triggered:
@@ -103,7 +90,7 @@ func add_bot_food():
 func countdown():
 	countdown_value = 3
 	count_down_label.text = str(countdown_value)
-	timer.start(1.0)
+	timer.start(0.2)
 	var shake_tween = create_tween()
 	var original_pos = count_down_label.position
 	for i in range(1):

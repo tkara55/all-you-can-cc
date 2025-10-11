@@ -1,16 +1,15 @@
 extends Area2D
 
-var speed = 300	
+var speed = 1000	
 var direction = Vector2.LEFT
+var projectile_textures = ["asd","asdf","asdfgh"]
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	projectile_textures.shuffle()
+	print(projectile_textures[0])
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	position += direction * delta * speed
-
-func _on_area_entered(area: Area2D) -> void:
-	if area.get_parent().name == "Player":
-		print("sd")
+	rotation += 5 * delta
