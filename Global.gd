@@ -41,6 +41,16 @@ var bot_types = {
 		"throw_cooldown": 1.5,  # 1.5 saniyede bir fırlatabilir
 		"throw_chance": 1.2,  # Saniyede %120 şans (çok agresif)
 		"projectile_speed":1000
+	},
+	"insane": {
+		"name": "Insane Bot",
+		"speed": 0.1,
+		"color": Color.ORANGE,
+		"mask_visible": false,
+		"ability_to_throw": true,  # Hard bot fırlatabilir
+		"throw_cooldown": 1.5,  # 1.5 saniyede bir fırlatabilir
+		"throw_chance": 1.2,  # Saniyede %120 şans (çok agresif)
+		"projectile_speed":1000
 	}
 }
 
