@@ -51,3 +51,4 @@ func stun(duration: float):
 	last_key = ""
 	await get_tree().create_timer(duration).timeout
 	is_stunned = false
+	print("stun is over")

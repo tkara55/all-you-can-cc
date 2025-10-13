@@ -1,15 +1,22 @@
 extends Area2D
 
-var speed = 1000	
+@onready var sprite: Sprite2D = $Sprite2D
 var direction = Vector2.LEFT
-var projectile_textures = ["asd","asdf","asdfgh"]
-# Called when the node enters the scene tree for the first time.
+
+var projectile_textures = [
+	preload("res://assets/fork.png"),
+	preload("res://assets/kitchen_kinfe.png"),
+]
+
 func _ready() -> void:
-	projectile_textures.shuffle()
-	print(projectile_textures[0])
+	# Eğer globalde texture seçilmediyse, bir kere seç
+	if Global.projectile_texture == null:
+		projectile_textures.shuffle()
+		Global.projectile_texture = projectile_textures[0]
+	
+	# Seçilen global texture'u kullan
+	sprite.texture = Global.projectile_texture
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	position += direction * delta * speed
-	rotation += 5 * delta
+	position += direction * delta * Global.projectile_speed
+	rotation += 6 * delta
